@@ -1,0 +1,63 @@
+name: madp               # “Multi-Agent Diffusion Planner”
+channels:
+  - pytorch              # first so PyTorch + CUDA resolve correctly
+  - nvidia               # houses pytorch-cuda meta-package
+  - conda-forge          # the broad scientific stack
+  - defaults
+channel_priority: strict
+
+dependencies:
+  # ───────────────────── core language ──────────────────────
+  - python=3.10
+
+  # ───────────────────── deep-learning stack ─────────────────
+  - pytorch=2.1.2
+  - torchvision=0.16.2
+  - torchaudio=2.1.2
+  - pytorch-cuda=12.1        # pulls cudatoolkit 12.1 + cuDNN etc.  :contentReference[oaicite:0]{index=0}
+
+  # ───────────────────── geometry / numerics ─────────────────
+  - shapely>=2.0             # map & collision ops (nuPlan needs 2.0+)  :contentReference[oaicite:1]{index=1}
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+
+  # ───────────────────── dev / viz / notebooks ───────────────
+  - matplotlib
+  - jupyterlab
+  - ipykernel
+
+  # ───────────────────── misc conda deps ─────────────────────
+  - pip                      # leave pip last so conda sees wheel reqs
+
+  # ───────────────────── pip-only packages ───────────────────
+  - pip:
+      # 1)  Simulator + dataset (pure-Python wheel)
+      - nuplan-devkit==1.2.2                       # closed-loop sim  :contentReference[oaicite:2]{index=2}
+
+      # 2)  Diffusion-ES planner (install straight from Git)
+      - git+https://github.com/bhyang/diffusion-es.git@main
+
+      # 3)  V2X-Graph perception / forecasting (Git)
+      - git+https://github.com/AIR-THU/V2X-Graph.git@main
+
+      # 4)  Trainer / config / logging utils
+      - pytorch-lightning==2.2.3
+      - hydra-core==1.3.2
+      - wandb
+
+      # 5)  Video + vision helpers
+      - opencv-python-headless
+      - av                            # render nuPlan videos
+
+      # 6)  Fast I/O / misc
+      - orjson
+      - dill
+
+      # 7)  Dev-tools (optional but nice)
+      - black
+      - isort
+      - mypy
+      - pre-commit
+      - pytest
